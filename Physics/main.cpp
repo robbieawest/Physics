@@ -9,7 +9,7 @@ int main() {
 
 	std::vector<Particle> particles;
 
-	sf::Vector2f gravity(0.0f, 100.0f);
+	sf::Vector2f gravity(0.0f, 300.0f);
 
 	int addingType = 0;
 
@@ -32,6 +32,9 @@ int main() {
 	timeStep.setPosition(0.0f, 35.0f);
 	timeStep.setFont(calibri);
 
+	//Colour alternation for rainbow pattern
+	int tCol = 0.0f;
+
 
 	while (window.isOpen()) {
 		sf::Event evnt;
@@ -46,7 +49,7 @@ int main() {
 			case sf::Event::MouseButtonPressed:
 
 				if (addingType == 0) {
-					createParticle(window, particles);
+					createParticle(window, particles, tCol);
 				}
 			}
 		}
@@ -54,6 +57,7 @@ int main() {
 		//Update delta time
 		dt = dtClock.getElapsedTime().asSeconds();
 		dtClock.restart();
+		tCol += dt;
 
 		//Text updates
 		timeStep.setString("TimeStep: " + std::to_string(dt));

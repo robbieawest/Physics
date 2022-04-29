@@ -70,15 +70,19 @@ void Particle::collision(std::vector<Particle> &particles) { //To add objects in
 			//Particles should move relative to the mass ratio between them both
 
 			
+			
 			float totalMass = mass + x.mass;
 			float movingDistance = rep.getRadius() + x.rep.getRadius() - distance;
 
 			d /= pythag(d); //Turn into unit vector
 			
-			rep.move(d * movingDistance * (mass / totalMass));
-			x.rep.move(-d * movingDistance * (x.mass / totalMass));//Using reciprocal of massRatio as the ratio is in terms rep:x.rep
+			rep.move(d * movingDistance * (x.mass / totalMass));
+			x.rep.move(-d * movingDistance * (mass / totalMass));		
 
+			// I dont think there needs to be any consideration of momentum direction and such in collisions
+			// It seems like verlet handles that implicitly
 
+		
 		}
 	}
 	

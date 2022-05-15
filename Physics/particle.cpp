@@ -1,5 +1,9 @@
 #include "functions.h"
 
+Particle::Particle()
+	: mass(0.0f), pastPos(0.0f, 0.0f), acceleration(0.0f, 0.0f)
+{}
+
 Particle::Particle(sf::Vector2f spawnPos, float r, sf::Color col, float m)
 	: mass(m), pastPos(spawnPos), acceleration(0.0f, 0.0f)
 {
@@ -21,7 +25,7 @@ void Particle::update(sf::Vector2f g, float dt) {
 	rep.setPosition(newPos);
 }
 
-void Particle::collision(std::vector<Particle> &particles) { //To add objects in
+void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody> &rigids) { //To add objects in
 	
 	//First, check collisions with outer boundaries
 
@@ -84,8 +88,5 @@ void Particle::collision(std::vector<Particle> &particles) { //To add objects in
 
 		
 		}
-	}
-	
-	
-
+	}	
 }

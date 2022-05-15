@@ -8,6 +8,9 @@ int main() {
 	window.setFramerateLimit(144);
 
 	std::vector<Particle> particles;
+	particles.reserve(1000); //Reserving memory stops pointers to particles from invalidating due to resizing vector on push_back(moving particles to different memory locations)
+	//This stops it by just allocating space, so no reallocation is needed
+	std::vector<rigidBody> rigids;
 
 	sf::Vector2f gravity(0.0f, 300.0f);
 
@@ -51,7 +54,17 @@ int main() {
 				if (addingType == 0) {
 					createParticle(window, particles, tCol);
 				}
+				else if (addingType == 1) {
+					createRigid(window, rigids, particles);
+				}
+				break;
+			case sf::Event::TextEntered:
+				if (evnt.text.unicode == 't') {
+					addingType++;
+					addingType = addingType == 2 ? 0 : addingType;
+				}
 			}
+			
 		}
 
 		//Update delta time
@@ -63,12 +76,18 @@ int main() {
 		timeStep.setString("TimeStep: " + std::to_string(dt));
 		fps.setString("FPS: " + std::to_string(1.0f / dt));
 
-		step(particles, gravity, dt);
+		step(particles, rigids, gravity, dt);
 
 		window.clear();
 
 		for (auto& x : particles) {
 			window.draw(x.rep);
+		}
+
+		for (auto& x : rigids) {
+			for (auto& y : x.links) {
+				window.draw(y.rep);
+			}
 		}
 
 		window.draw(fps);

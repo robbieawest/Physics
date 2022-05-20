@@ -1,11 +1,11 @@
 #include "functions.h"
 
 Particle::Particle()
-	: mass(0.0f), pastPos(0.0f, 0.0f), acceleration(0.0f, 0.0f)
+	: mass(0.0f), pastPos(0.0f, 0.0f), acceleration(0.0f, 0.0f), rigidType(-1), movable(true), linking(0)
 {}
 
-Particle::Particle(sf::Vector2f spawnPos, float r, sf::Color col, float m)
-	: mass(m), pastPos(spawnPos), acceleration(0.0f, 0.0f)
+Particle::Particle(sf::Vector2f spawnPos, float r, sf::Color col, float m, int rig)
+	: mass(m), pastPos(spawnPos), acceleration(0.0f, 0.0f), rigidType(rig), movable(true), linking(0)
 {
 	rep.setRadius(r);
 	rep.setOrigin(r, r);
@@ -17,15 +17,17 @@ Particle::Particle(sf::Vector2f spawnPos, float r, sf::Color col, float m)
 void Particle::update(sf::Vector2f g, float dt) {
 	//This only concerns gravity as a force, not collisions
 	//Collisions impact past and current position
-	
-	acceleration = g;
+	if (movable) {
 
-	sf::Vector2f newPos = 2.0f * rep.getPosition() - pastPos + acceleration * dt * dt;
-	pastPos = rep.getPosition();
-	rep.setPosition(newPos);
+		acceleration = g;
+
+		sf::Vector2f newPos = 2.0f * rep.getPosition() - pastPos + acceleration * dt * dt;
+		pastPos = rep.getPosition();
+		rep.setPosition(newPos);
+	}
 }
 
-void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody> &rigids) { //To add objects in
+void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody> &rigids, std::vector<Link> &links) { //To add objects in
 	
 	//First, check collisions with outer boundaries
 
@@ -80,8 +82,10 @@ void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody
 
 			d /= pythag(d); //Turn into unit vector
 			
-			rep.move(d * movingDistance * (x.mass / totalMass));
-			x.rep.move(-d * movingDistance * (mass / totalMass));		
+			if(movable)
+				rep.move(d * movingDistance * (x.mass / totalMass));
+			if(x.movable)
+				x.rep.move(-d * movingDistance * (mass / totalMass));		
 
 			// I dont think there needs to be any consideration of momentum direction and such in collisions
 			// It seems like verlet handles that implicitly
@@ -89,4 +93,16 @@ void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody
 		
 		}
 	}	
+
+	//Check collision with rigid bodies
+	for (auto& x : rigids) {
+		x.particleCollision(this);
+	}
+	
+
+	//Now check collision with links...
+
+	for (auto& x : links) {
+		x.particleCollision(particles, *this);
+	}
 }

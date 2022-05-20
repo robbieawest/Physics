@@ -10,7 +10,13 @@ public:
 
 	Link();
 	Link(std::vector<Particle*> &linkedParticles, int i1, int i2, float m);
+	Link(std::vector<Particle> &linkedParticles, int i1, int i2, float m);
 
 	void pullParticles(std::vector<Particle*>& lp);
+	void pullParticles(std::vector<Particle>& lp);
+
 	void updateRect(std::vector<Particle*> &lp);
+	void updateRect(std::vector<Particle> &lp);
+
+	void particleCollision(std::vector<Particle> &particles, Particle& p);
 };

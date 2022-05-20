@@ -9,6 +9,8 @@ public:
 	std::vector<Particle*> linkedParticles;
 
 	std::vector<Link> links;//six links for rectangular hatching shape
+
+	float fullMass;
 	
 	rigidBody();
 

@@ -2,6 +2,7 @@
 #include "functions.h"
 
 class rigidBody;
+class Link;
 
 class Particle {
 public:
@@ -12,10 +13,14 @@ public:
 	sf::CircleShape rep;
 
 	float mass;
+	bool movable;
+
+	int rigidType;
+	int linking;
 
 	Particle();
-	Particle(sf::Vector2f spawnPos, float r, sf::Color col, float m);
+	Particle(sf::Vector2f spawnPos, float r, sf::Color col, float m, int rig);
 	
 	void update(sf::Vector2f g, float dt);
-	void collision(std::vector<Particle>& particles, std::vector<rigidBody> &rigids);
+	void collision(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std::vector<Link> &links);
 };

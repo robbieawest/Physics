@@ -11,6 +11,7 @@ int main() {
 	particles.reserve(1000); //Reserving memory stops pointers to particles from invalidating due to resizing vector on push_back(moving particles to different memory locations)
 	//This stops it by just allocating space, so no reallocation is needed
 	std::vector<rigidBody> rigids;
+	std::vector<Link> links;//links outside of rigid bodies
 
 	sf::Vector2f gravity(0.0f, 300.0f);
 
@@ -52,16 +53,28 @@ int main() {
 			case sf::Event::MouseButtonPressed:
 
 				if (addingType == 0) {
-					createParticle(window, particles, tCol);
+					createParticle(window, particles, tCol, true);
 				}
 				else if (addingType == 1) {
 					createRigid(window, rigids, particles);
 				}
+				else if (addingType == 2) {
+					createParticle(window, particles, tCol, false);
+				}
+				else if (addingType == 3) {
+					createParticle(window, particles, tCol, true);
+					links.push_back(Link(particles, particles.size() - 1, particles.size() - 2, 1.0f));
+				}
+				else if (addingType == 4) {
+					createParticle(window, particles, tCol, false);
+					links.push_back(Link(particles, particles.size() - 1, particles.size() - 2, 1.0f));
+				}
+
 				break;
 			case sf::Event::TextEntered:
 				if (evnt.text.unicode == 't') {
 					addingType++;
-					addingType = addingType == 2 ? 0 : addingType;
+					addingType = addingType == 5 ? 0 : addingType;
 				}
 			}
 			
@@ -76,9 +89,13 @@ int main() {
 		timeStep.setString("TimeStep: " + std::to_string(dt));
 		fps.setString("FPS: " + std::to_string(1.0f / dt));
 
-		step(particles, rigids, gravity, dt);
+		step(particles, rigids, links, gravity, dt);
 
 		window.clear();
+		
+		for (auto& x : links) {
+			window.draw(x.rep);
+		}
 
 		for (auto& x : particles) {
 			window.draw(x.rep);
@@ -90,6 +107,7 @@ int main() {
 			}
 		}
 
+		
 		window.draw(fps);
 		window.draw(timeStep);
 

@@ -22,5 +22,5 @@ public:
 	Particle(sf::Vector2f spawnPos, float r, sf::Color col, float m, int rig);
 	
 	void update(sf::Vector2f g, float dt);
-	void collision(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std::vector<Link> &links);
+	void collision(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std::vector<Link> &links, sf::Vector2f g, float dt);
 };

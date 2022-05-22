@@ -14,7 +14,6 @@ void vCout(sf::Vector2f a, std::string str) {
 
 }
 
-//Function to create rigid body
 
 //Function to create solitary particle
 void createParticle(sf::RenderWindow& window, std::vector<Particle> &particles, int &tCol, bool mov) {
@@ -35,7 +34,7 @@ void createParticle(sf::RenderWindow& window, std::vector<Particle> &particles, 
 	int blue = sin(tCol + 4) * 127.0f + 128.0f;
 	//
 
-	particles.push_back(Particle(mousePos, r, sf::Color(red, green, blue), m, -1));
+	particles.push_back(Particle(mousePos, r / 2.0f, sf::Color(red, green, blue), m, -1));
 	particles[particles.size() - 1].movable = mov;
 	
 	tCol++;
@@ -44,16 +43,16 @@ void createParticle(sf::RenderWindow& window, std::vector<Particle> &particles, 
 
 
 //Full Step
-void step(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std::vector<Link> &links, sf::Vector2f g, float dt) {
+void step(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std::vector<Link> &links, sf::Vector2f g, float dt, int &substeps) {
 
 	//without sub-stepping particles will collapse into eachover if there is lots of pressure
 	//substepping stops this by just repeating the step an appropiate amount until kinetic energy is properly evaulated(collision works)
 	//delta time has to be divided proportional to the number of sub steps
 
-	int coef = 5.0f; //As the coefficient increases the amount at which stability to dt increases increases
+	int coef = 3.0f; //As the coefficient increases the amount at which stability to dt increases increases
 	//*Have to be careful to not make coefficient too high, as the delta time will increase with the increased substeps in which the substeps keeps growing while simulation stays constant
 	//^ The reason why this does not happen with small coefficient values is because the float is truncated to integer, providing a sort of cap
-	int substeps = 8 * (1.0f - coef / 100.0f + dt * coef);//If dt > 0.001(fps < 100) substeps will start to increase (with truncation intended)
+	substeps = 8 * (1.0f - coef / 100.0f + dt * coef);//If dt > 0.001(fps < 100) substeps will start to increase (with truncation intended)
 	//^ This suprisingly helps stability quite a lot
 	dt /= substeps;
 	for (int i = 0; i < substeps; i++) {
@@ -72,7 +71,7 @@ void step(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std:
 
 
 		for (auto& x : particles) {
-			x.collision(particles, rigids, links);
+			x.collision(particles, rigids, links, g, dt);
 		}
 
 	}

@@ -65,9 +65,10 @@ void Link::pullParticles(std::vector<Particle*>& lp) {
 	d /= dl; //normalise
 	float diff = (anchorL - dl) * 0.5f;
 	
-
-	lp[ip1]->rep.move(-d * diff);
-	lp[ip2]->rep.move(d * diff);
+	if(lp[ip1]->movable)
+		lp[ip1]->rep.move(-d * diff);
+	if(lp[ip1]->movable)
+		lp[ip2]->rep.move(d * diff);
 }
 
 void Link::pullParticles(std::vector<Particle>& lp) {
@@ -79,9 +80,10 @@ void Link::pullParticles(std::vector<Particle>& lp) {
 	d /= dl; //normalise
 	float diff = (anchorL - dl) * 0.5f;
 	
-
-	lp[ip1].rep.move(-d * diff);
-	lp[ip2].rep.move(d * diff);
+	if(lp[ip1].movable)
+		lp[ip1].rep.move(-d * diff);
+	if(lp[ip2].movable)
+		lp[ip2].rep.move(d * diff);
 }
 
 void Link::particleCollision(std::vector<Particle> &particles, Particle& p) {

@@ -2,7 +2,7 @@
 
 int main() {
 
-	srand(time(NULL));
+	srand(time(NULL));//Initialise random seed
 
 	sf::RenderWindow window(sf::VideoMode(900, 900), "Physics Engine", sf::Style::Default);
 	window.setFramerateLimit(144);
@@ -21,6 +21,8 @@ int main() {
 	sf::Clock dtClock;
 	float dt;
 
+	//Steps
+	int substeps = 0;
 
 	//texts
 	sf::Font calibri;
@@ -35,6 +37,13 @@ int main() {
 	timeStep.setFillColor(sf::Color::Red);
 	timeStep.setPosition(0.0f, 35.0f);
 	timeStep.setFont(calibri);
+
+	sf::Text subStep;
+	subStep.setFillColor(sf::Color::Blue);
+	subStep.setPosition(0.0f, 70.0f);
+	subStep.setFont(calibri);
+
+	
 
 	//Colour alternation for rainbow pattern
 	int tCol = 0.0f;
@@ -80,16 +89,22 @@ int main() {
 			
 		}
 
+		//+---------------------------------------------------------------Updates------------------------------------------------------------+
+
 		//Update delta time
 		dt = dtClock.getElapsedTime().asSeconds();
 		dtClock.restart();
 		tCol += dt;
 
 		//Text updates
-		timeStep.setString("TimeStep: " + std::to_string(dt));
+		timeStep.setString("Timestep: " + std::to_string(dt));
 		fps.setString("FPS: " + std::to_string(1.0f / dt));
+		subStep.setString("Substeps: " + std::to_string(substeps));
 
-		step(particles, rigids, links, gravity, dt);
+
+		step(particles, rigids, links, gravity, dt, substeps);//Main step
+
+		//+--------------------------------------------------------------Rendering-----------------------------------------------------------+
 
 		window.clear();
 		
@@ -110,8 +125,12 @@ int main() {
 		
 		window.draw(fps);
 		window.draw(timeStep);
+		window.draw(subStep);
 
 		window.display();
+
+		//+----------------------------------------------------------------------------------------------------------------------------------+
+
 	}
 
 	return 0;

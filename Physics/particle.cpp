@@ -21,13 +21,13 @@ void Particle::update(sf::Vector2f g, float dt) {
 
 		acceleration = g;
 
-		sf::Vector2f newPos = 2.0f * rep.getPosition() - pastPos + acceleration * dt * dt;
+		sf::Vector2f newPos = 2.0f * rep.getPosition() - pastPos + acceleration * dt * dt; //Verlet integration
 		pastPos = rep.getPosition();
 		rep.setPosition(newPos);
 	}
 }
 
-void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody> &rigids, std::vector<Link> &links) { //To add objects in
+void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody> &rigids, std::vector<Link> &links, sf::Vector2f g, float dt) { //To add objects in
 	
 	//First, check collisions with outer boundaries
 
@@ -36,15 +36,26 @@ void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody
 		float diff = 900.0f - (rep.getPosition().y + rep.getRadius());
 		rep.move(sf::Vector2f(0.0f, diff));
 		pastPos.y = rep.getPosition().y + (rep.getPosition().y - pastPos.y);
-		pastPos.y -= diff * 0.2f;
+		pastPos.y -= diff * 0.8f;//0.4f is for loss of kinetic energy on collision which reflects the physics of a realistic, inelastic ball
+
+		//Implement friction on x
+		float xDiff = rep.getPosition().x - pastPos.x;
+
+		float Fr = pythag(g) / mass * 0.01f * dt; //Friction force where 0.01 is the coefficient of friction
+		if (xDiff < 0.0f) Fr *= -1.0f;
+		
+		bool t = xDiff < 0.0f;
+		if (xDiff != 0.0f) 	xDiff -= Fr;
+		if ((xDiff < 0.0f) != t) xDiff = 0.0f;
+				
+		pastPos.x = rep.getPosition().x - xDiff;//Rearrange for pastPos.x
 	}
-	else if (rep.getPosition().y - rep.getRadius() < 0) {
+	else if (rep.getPosition().y - rep.getRadius() < 0) {//Rest just uses theory from above^
 
 		float diff = 0.0f - (rep.getPosition().y - rep.getRadius());
 		rep.move(sf::Vector2f(0.0f, diff));
 		pastPos.y = rep.getPosition().y + (rep.getPosition().y - pastPos.y);
 		pastPos.y -= diff * 0.2f;
-
 	}
 	if (rep.getPosition().x + rep.getRadius() > 900) {
 

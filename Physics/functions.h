@@ -14,5 +14,7 @@ void createRigidParticle(sf::Vector2f sp, float w, int t, std::vector<Particle> 
 void createRigid(sf::RenderWindow &window, std::vector<rigidBody>& rigids, std::vector<Particle> &particles);
 void step(std::vector<Particle> & particdles, std::vector<rigidBody> &rigids, std::vector<Link> &links, sf::Vector2f g, float dt);
 
+bool operator!=(Particle& p1, Particle& p2);
+
 
 

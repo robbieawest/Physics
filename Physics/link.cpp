@@ -87,7 +87,8 @@ void Link::pullParticles(std::vector<Particle>& lp) {
 void Link::particleCollision(std::vector<Particle> &particles, Particle& p) {
 
 	//First check if within bounding box to keep going
-	if (p.rep.getGlobalBounds().intersects(rep.getGlobalBounds())) {
+
+	if (p != particles[ip1] && p != particles[ip2] && p.rep.getGlobalBounds().intersects(rep.getGlobalBounds())) {
 		//Is within bounding box, and can continue
 
 		//Check collision by lines

@@ -54,17 +54,12 @@ void step(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std:
 	//*Have to be careful to not make coefficient too high, as the delta time will increase with the increased substeps in which the substeps keeps growing while simulation stays constant
 	//^ The reason why this does not happen with small coefficient values is because the float is truncated to integer, providing a sort of cap
 	int substeps = 8 * (1.0f - coef / 100.0f + dt * coef);//If dt > 0.001(fps < 100) substeps will start to increase (with truncation intended)
-	std::cout << substeps << std::endl;
 	//^ This suprisingly helps stability quite a lot
 	dt /= substeps;
 	for (int i = 0; i < substeps; i++) {
 
 		for (auto& x : particles) {
 			x.update(g, dt);
-		}
-
-		for (auto& x : particles) {
-			x.collision(particles, rigids, links);
 		}
 
 		for (auto& x : rigids) {
@@ -74,6 +69,12 @@ void step(std::vector<Particle>& particles, std::vector<rigidBody> &rigids, std:
 		for (auto& x : links) {
 			x.pullParticles(particles);
 		}
+
+
+		for (auto& x : particles) {
+			x.collision(particles, rigids, links);
+		}
+
 	}
 
 	for (auto& x : rigids) {
@@ -144,5 +145,7 @@ void createRigidParticle(sf::Vector2f sp, float w, int t, std::vector<Particle> 
 	
 }
 
-
-
+bool operator!=(Particle& p1, Particle& p2) {
+	return p1.rep.getGlobalBounds() != p2.rep.getGlobalBounds();//Overloading so that two particle references can be compared
+	//Otherwise, C2676 
+}

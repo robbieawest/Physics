@@ -36,14 +36,14 @@ void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody
 		float diff = 900.0f - (rep.getPosition().y + rep.getRadius());
 		rep.move(sf::Vector2f(0.0f, diff));
 		pastPos.y = rep.getPosition().y + (rep.getPosition().y - pastPos.y);
-		pastPos.y -= diff * 0.5f;
+		pastPos.y -= diff * 0.2f;
 	}
 	else if (rep.getPosition().y - rep.getRadius() < 0) {
 
 		float diff = 0.0f - (rep.getPosition().y - rep.getRadius());
 		rep.move(sf::Vector2f(0.0f, diff));
 		pastPos.y = rep.getPosition().y + (rep.getPosition().y - pastPos.y);
-		pastPos.y -= diff * 0.5f;
+		pastPos.y -= diff * 0.2f;
 
 	}
 	if (rep.getPosition().x + rep.getRadius() > 900) {
@@ -51,14 +51,14 @@ void Particle::collision(std::vector<Particle> &particles, std::vector<rigidBody
 		float diff = 900.0f - (rep.getPosition().x + rep.getRadius());
 		rep.move(sf::Vector2f(diff, 0.0f));
 		pastPos.x = rep.getPosition().x + (rep.getPosition().x - pastPos.x);
-		pastPos.x -= diff * 0.5f;
+		pastPos.x -= diff * 0.2f;
 	}
 	else if (rep.getPosition().x - rep.getRadius() < 0) {
 
 		float diff = 0.0f - (rep.getPosition().x - rep.getRadius());
 		rep.move(sf::Vector2f(diff, 0.0f));
 		pastPos.x = rep.getPosition().x + (rep.getPosition().x - pastPos.x);
-		pastPos.x -= diff * 0.5f;
+		pastPos.x -= diff * 0.2f;
 
 	}
 

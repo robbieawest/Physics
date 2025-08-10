@@ -3,9 +3,7 @@
 
 Included:
 
-Gravity based movement and particle self-collision
-Integration using Verlet
-Rigidbody implementation using links
-Substepping and reactive substep algorithm for increased delta times
-
-
+- Gravity based movement and particle self-collision
+- Verlet numeric integration
+- Rigidbody implementation using links
+- Substepping and reactive substep algorithm
